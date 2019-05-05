@@ -1,16 +1,16 @@
 /*
-Stored Procedures PROCESS
+Stored Procedures Production_Batch
 */
 
 /* BeansProcessed */
 GO
 CREATE PROCEDURE BeansProcessed
-	(@Name NVARCHAR(50), @Weight FLOAT, @DateOfProcess DateTime2, @Loss FLOAT)
+	(@RawProductID INT, @ProcessName NVARCHAR(50), @ProcessWeight FLOAT, @ProcessLoss FLOAT, @DateOfProcess DateTime2)
 AS BEGIN
 	INSERT INTO ERP.Process 
-	([Name], [Weight], [DateOfProcess], [Loss]) 
+	(RawProductID, ProcessName, ProcessWeight, ProcessLoss, DateOfProcess) 
 		VALUES 
-	(@Name, @Weight, @DateOfProcess, @Loss)
+	(@ProcessName, @ProcessWeight, @ProcessLoss, @DateOfProcess)
 END
 
 
@@ -21,55 +21,70 @@ Stored Procedures CUSTOMER
 /* AddCustomer */
 GO
 CREATE PROCEDURE AddCustomer
-	(@CompanyName NVARCHAR(50), @ProductOwner NVARCHAR(50), @Address NVARCHAR(50), 
-	@Zip NVARCHAR(10), @Town NVARCHAR(50), @Telephone NVARCHAR(20))
+	(@CompanyName NVARCHAR(50), @ContactPerson NVARCHAR(50), @CustomerAddress NVARCHAR(50), 
+	@CustomerTelephone NVARCHAR(20), @CustomerZip NVARCHAR(10), @CustomerTown NVARCHAR(50))
 AS BEGIN
 	INSERT INTO ERP.Customer 
-	([CompanyName], [ProductOwner], [Address], [Zip], [Town], [Telephone])
+	(CompanyName, ContactPerson, CustomerAddress, CustomerTelephone, CustomerZip, CustomerTown)
 		VALUES 
-	(@CompanyName, @ProductOwner, @Address, @Zip, @Town, @Telephone)
+	(@CompanyName, @ContactPerson, @CustomerAddress, @CustomerTelephone, @CustomerZip, @CustomerTown)
 END
 
 /* EditCustomer */
 GO
 CREATE PROCEDURE EditCustomer
-	(@ID INT, @CompanyName NVARCHAR(50), @ProductOwner NVARCHAR(50), @Address NVARCHAR(50), 
-	@Zip NVARCHAR(10), @Town NVARCHAR(50), @Telephone NVARCHAR(20))
+	(@CustomerID INT, @CompanyName NVARCHAR(50), @ContactPerson NVARCHAR(50), @CustomerAddress NVARCHAR(50), 
+	@CustomerTelephone NVARCHAR(20), @CustomerZip NVARCHAR(10), @CustomerTown NVARCHAR(50))
 AS BEGIN
 	UPDATE ERP.Customer 
-	SET [CompanyName] = @CompanyName, [ProductOwner] = @ProductOwner, [Address] = @Address, 
-		[Zip] = @Zip, [Town] = @Town, [Telephone] = @Telephone 
-	WHERE [ID] = @ID
+	SET CompanyName = @CompanyName, ContactPerson = @ContactPerson, CustomerAddress = @CustomerAddress, 
+		CustomerTelephone = @CustomerTelephone, CustomerZip = @CustomerZip, CustomerTown = @CustomerTown
+	WHERE CustomerID = @CustomerID
 END
 
 /* DeleteCustomer */
 GO
 CREATE PROCEDURE DeleteCustomer
-	(@ID INT)
+	(@CustomerID INT)
 AS BEGIN
 	DELETE FROM ERP.Customer 
-	WHERE ID = @ID
+	WHERE CustomerID = @CustomerID
 END
 
-/* ShowCustomers !!!! HER SKAL VI LIGE HAVE KIGGET PÅ NOGET MED HVAD DEN SKAL SØGE EFTER !!!! */
+/* ShowCustomers */
 GO
 CREATE PROCEDURE ShowCustomers
-	(@CompanyName NVARCHAR(50), @ProductOwner NVARCHAR(50), @Address NVARCHAR(50), 
-	@Zip NVARCHAR(10), @Town NVARCHAR(50), @Telephone NVARCHAR(20))
 AS BEGIN
-	SELECT [CompanyName], [ProductOwner], [Address], [Zip], [Town], [Telephone]
+	SELECT CustomerID, CompanyName, ContactPerson, CustomerAddress, CustomerTelephone, CustomerZip, CustomerTown
 	FROM ERP.Customer
-	WHERE [CompanyName] = @CompanyName
+END
+
+/* ShowSpecificCustomers */
+GO
+CREATE PROCEDURE ShowSpecificCustomers
+(@CustomerID INT = NULL, @CompanyName NVARCHAR(50) = NULL, @ContactPerson NVARCHAR(50) = NULL, 
+@CustomerAddress NVARCHAR(50) = NULL, @CustomerTelephone NVARCHAR(20) = NULL, @CustomerZip NVARCHAR(10) = NULL, @CustomerTown NVARCHAR(10) = NULL)
+AS BEGIN
+	SELECT CustomerID, CompanyName, ContactPerson, 
+			CustomerAddress, CustomerTelephone, CustomerZip, CustomerTown
+	FROM ERP.Customer
+	WHERE (CompanyName LIKE @CompanyName+'%' OR @CompanyName IS NULL) AND 
+			(ContactPerson LIKE @ContactPerson+'%' OR @ContactPerson IS NULL) AND 
+			(CustomerAddress LIKE @CustomerAddress+'%' OR @CustomerAddress IS NULL) AND 
+			(CustomerTelephone LIKE @CustomerTelephone+'%' OR @CustomerTelephone IS NULL) AND 
+			(CustomerZip LIKE @CustomerZip+'%' OR @CustomerZip IS NULL) AND 
+			(CustomerTown LIKE @CustomerTown+'%' OR @CustomerTown IS NULL)
 END
 
 /* ShowCustomer */
 GO
 CREATE PROCEDURE ShowCustomer
-	(@ID INT)
+	(@CustomerID INT)
 AS BEGIN
-	SELECT [CompanyName], [ProductOwner], [Address], [Zip], [Town], [Telephone]
-	FROM ERP.Customer 
-	WHERE [ID] = @ID
+	SELECT CustomerID, CompanyName, ContactPerson, 
+			CustomerAddress, CustomerTelephone, CustomerZip, CustomerTown
+	FROM ERP.Customer
+	WHERE CustomerID = @CustomerID
 END
 
 
@@ -81,51 +96,61 @@ Stored Procedures RAWPRODUCT
 /* AddRawProduct */
 GO
 CREATE PROCEDURE AddRawProduct
-	(@Name NVARCHAR(50), @Weight FLOAT, @DateOfPurchase DateTime2)
+	(@RawProductName NVARCHAR(50), @RawProductWeight FLOAT, @DateOfPurchase DateTime2)
 AS BEGIN
 	INSERT INTO ERP.RawProduct 
-	([Name], [Weight], [DateOfPurchase])
+	(RawProductName, RawProductWeight, DateOfPurchase)
 		VALUES 
-	(@Name, @Weight, @DateOfPurchase)
+	(@RawProductName, @RawProductWeight, @DateOfPurchase)
 END
 
 /* EditRawProduct */
 GO
 CREATE PROCEDURE EditRawProduct
-	(@ID INT, @Name NVARCHAR(50), @Weight FLOAT, @DateOfPurchase DateTime2)
+	(@RawProductID INT, @RawProductName NVARCHAR(50), @RawProductWeight FLOAT, @DateOfPurchase DateTime2)
 AS BEGIN
 	UPDATE ERP.RawProduct 
-	SET [Name] = @Name, [Weight] = @Weight, [DateOfPurchase] = @DateOfPurchase
-	WHERE [ID] = @ID
+	SET RawProductName = @RawProductName, RawProductWeight = @RawProductWeight, DateOfPurchase = @DateOfPurchase
+	WHERE RawProductID = @RawProductID
 END
 
 /* DeleteRawProduct */
 GO
 CREATE PROCEDURE DeleteRawProduct
-	(@ID INT)
+	(@RawProductID INT)
 AS BEGIN
 	DELETE FROM ERP.RawProduct
-	WHERE ID = @ID
+	WHERE RawProductID = @RawProductID
 END
 
-/* ShowRawProducts !!!! HER SKAL VI LIGE HAVE KIGGET PÅ NOGET MED HVAD DEN SKAL SØGE EFTER !!!! */
+/* ShowRawProducts */
 GO
 CREATE PROCEDURE ShowRawProducts
-	(@Name NVARCHAR(50), @Weight FLOAT, @DateOfPurchase DateTime2)
 AS BEGIN
-	SELECT [Name], [Weight], [DateOfPurchase]
+	SELECT RawProductID, RawProductName, RawProductWeight, DateOfPurchase
 	FROM ERP.RawProduct
-	WHERE [Name] = @Name
+END
+
+/* ShowSpecificRawProducts */
+GO
+CREATE PROCEDURE ShowSpecificRawProducts
+(@RawProductName NVARCHAR(50) = NULL, @RawProductWeight FLOAT = 0, @DateOfPurchase DateTime2 = '01-01-1973 12:00:00')
+AS BEGIN
+	SELECT RawProductID, RawProductName, RawProductWeight, DateOfPurchase
+	FROM ERP.RawProduct
+	WHERE (RawProductName LIKE @RawProductName+'%' OR @RawProductName IS NULL) AND 
+			(RawProductWeight = @RawProductWeight OR @RawProductWeight = 0) AND 
+			(DateOfPurchase = @DateOfPurchase OR @DateOfPurchase = '01-01-1973 12:00:00')
 END
 
 /* ShowRawProduct */
 GO
 CREATE PROCEDURE ShowRawProduct
-	(@ID INT)
+	(@RawProductID INT)
 AS BEGIN
-	SELECT [Name], [Weight], [DateOfPurchase]
+	SELECT RawProductID, RawProductName, RawProductWeight, DateOfPurchase
 	FROM ERP.RawProduct 
-	WHERE [ID] = @ID
+	WHERE RawProductID = @RawProductID
 END
 
 /*
@@ -136,51 +161,66 @@ Stored Procedures PRODUCT
 /* AddProduct */
 GO
 CREATE PROCEDURE AddProduct
-	(@Name NVARCHAR(50), @Weight FLOAT, @Price FLOAT, @Amount FLOAT, @DateOfPackaging DateTime2, @DateOfExpiration DateTime2)
+	(@ProductName NVARCHAR(50), @ProductWeight FLOAT, @ProductPrice FLOAT, 
+	@ProductAmount FLOAT, @DateOfPackaging DateTime2, @DateOfExpiration DateTime2)
 AS BEGIN
 	INSERT INTO ERP.Product 
-	([Name], [Weight], [Price], [Amount], [DateOfPackaging], [DateOfExpiration])
+	(ProductName, ProductWeight, ProductPrice, ProductAmount, DateOfPackaging, DateOfExpiration)
 		VALUES 
-	(@Name, @Weight, @Price, @Amount, @DateOfPackaging, @DateOfExpiration)
+	(@ProductName, @ProductWeight, @ProductPrice, @ProductAmount, @DateOfPackaging, @DateOfExpiration)
 END
 
 /* EditProduct */
 GO
 CREATE PROCEDURE EditProduct
-	(@ID INT, @Name NVARCHAR(50), @Weight FLOAT, @Price FLOAT, @Amount FLOAT, 
-	@DateOfPackaging DateTime2, @DateOfExpiration DateTime2)
+	(@ProductID INT, @ProductName NVARCHAR(50), @ProductWeight FLOAT, @ProductPrice FLOAT, 
+	@ProductAmount FLOAT, @DateOfPackaging DateTime2, @DateOfExpiration DateTime2)
 AS BEGIN
 	UPDATE ERP.Product 
-	SET [Name] = @Name, [Weight] = @Weight, [Price] = @Price, [Amount] = @Amount, 
-	[DateOfPackaging] = @DateOfPackaging, [DateOfExpiration] = @DateOfExpiration
-	WHERE [ID] = @ID
+	SET ProductName = @ProductName, ProductWeight = @ProductWeight, ProductPrice = @ProductPrice, 
+	ProductAmount = @ProductAmount, DateOfPackaging = @DateOfPackaging, DateOfExpiration = @DateOfExpiration
+	WHERE ProductID = @ProductID
 END
 
 /* DeleteProduct */
 GO
 CREATE PROCEDURE DeleteProduct
-	(@ID INT)
+	(@ProductID INT)
 AS BEGIN
 	DELETE FROM ERP.Product
-	WHERE ID = @ID
+	WHERE ProductID = @ProductID
 END
 
-/* ShowRawProducts !!!! HER SKAL VI LIGE HAVE KIGGET PÅ NOGET MED HVAD DEN SKAL SØGE EFTER !!!! */
+/* ShowProducts */
 GO
 CREATE PROCEDURE ShowProducts
-	(@Name NVARCHAR(50), @Weight FLOAT, @Price FLOAT, @Amount FLOAT, @DateOfPackaging DateTime2, @DateOfExpiration DateTime2)
 AS BEGIN
-	SELECT [Name], [Weight], [Price], [Amount], [DateOfPackaging], [DateOfExpiration]
+	SELECT ProductID, ProductName, ProductWeight, ProductPrice, ProductAmount, DateOfPackaging, DateOfExpiration
 	FROM ERP.Product
-	WHERE [Name] = @Name
 END
 
-/* ShowRawProduct */
+/* ShowSpecificRawProducts */
+GO
+CREATE PROCEDURE ShowSpecificProducts
+(@ProductName NVARCHAR(50) = NULL, @ProductWeight FLOAT = 0, @ProductPrice FLOAT = 0, 
+	@ProductAmount FLOAT = 0, @DateOfPackaging DateTime2 = '01-01-1973 12:00:00', @DateOfExpiration DateTime2 = '01-01-1973 12:00:00')
+AS BEGIN
+	SELECT ProductID, ProductName, ProductWeight, ProductPrice, ProductAmount, DateOfPackaging, DateOfExpiration
+	FROM ERP.Product
+	WHERE (ProductName LIKE @ProductName+'%' OR @ProductName IS NULL) AND 
+			(ProductWeight = @ProductWeight OR @ProductWeight = 0) AND 
+			(ProductPrice = @ProductPrice OR @ProductPrice = 0) AND 
+			(ProductAmount = @ProductAmount OR @ProductAmount = 0) AND 
+			(DateOfPackaging = @DateOfPackaging OR @DateOfPackaging = '01-01-1973 12:00:00') AND 
+			(DateOfExpiration = @DateOfExpiration OR @DateOfExpiration = '01-01-1973 12:00:00')
+END
+
+/* ShowProduct */
 GO
 CREATE PROCEDURE ShowProduct
-	(@ID INT)
+	(@ProductID INT)
 AS BEGIN
-	SELECT [Name], [Weight], [Price], [Amount], [DateOfPackaging], [DateOfExpiration]
+	SELECT ProductName, ProductWeight, ProductPrice, ProductAmount, DateOfPackaging, DateOfExpiration
 	FROM ERP.Product 
-	WHERE [ID] = @ID
+	WHERE ProductID = @ProductID
 END
