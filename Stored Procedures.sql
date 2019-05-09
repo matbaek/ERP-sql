@@ -224,3 +224,47 @@ AS BEGIN
 	FROM ERP.Product 
 	WHERE ProductID = @ProductID
 END
+
+/*
+Stored Procedures Order
+*/
+
+
+/* AddOrder */
+
+
+/* EditOrder */
+
+
+/* DeleteOrder */
+
+
+/* ShowOrders */
+GO
+CREATE PROCEDURE ShowOrders
+AS BEGIN
+	SELECT OrderID, CustomerID, DateOfPurchase, TotalPrice
+	FROM ERP.[Order]
+END
+
+/* ShowSpecificOrders */
+GO
+CREATE PROCEDURE ShowSpecificOrders
+(@CustomerID INT = 0, @DateOfPurchase DateTime2 = '01-01-1973 12:00:00', @TotalPrice FLOAT = 0)
+AS BEGIN
+	SELECT OrderID, CustomerID, DateOfPurchase, TotalPrice
+	FROM ERP.[Order]
+	WHERE (CustomerID = @CustomerID OR @CustomerID = 0) AND 
+			(DateOfPurchase = @DateOfPurchase OR @DateOfPurchase = '01-01-1973 12:00:00') AND 
+			(TotalPrice = @TotalPrice OR @TotalPrice = 0)
+END
+
+/* ShowOrder */
+GO
+CREATE PROCEDURE ShowOrder
+	(@CustomerID INT)
+AS BEGIN
+	SELECT OrderID, CustomerID, DateOfPurchase, TotalPrice
+	FROM ERP.[Order] 
+	WHERE CustomerID = @CustomerID
+END
