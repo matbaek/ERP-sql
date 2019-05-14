@@ -231,7 +231,15 @@ Stored Procedures Order
 
 
 /* AddOrder */
-
+GO
+CREATE PROCEDURE AddOrder
+(@CustomerID INT, @DateOfPurchase DateTime2, @TotalPrice FLOAT)
+AS BEGIN
+	INSERT INTO ERP.[ORDER]
+	(CustomerID, DateOfPurchase, TotalPrice) 
+		VALUES
+	(@CustomerID, @DateOfPurchase, @TotalPrice)
+END
 
 /* EditOrder */
 
