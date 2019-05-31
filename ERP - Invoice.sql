@@ -1,0 +1,13 @@
+USE C_DB10_2018;
+
+CREATE TABLE ERP.Invoice(
+	InvoiceID INT IDENTITY(1,1), 
+	OrderID INT NOT NULL,
+	DateOfDelivery DateTime2 NOT NULL, 
+	FormOfDelivery NVARCHAR(100) NOT NULL, 
+	FormOfPayment NVARCHAR(100) NOT NULL, 
+	[Send] BIT NOT NULL, 
+	CreditNota BIT NOT NULL, 
+	CONSTRAINT InvoiceID_PK PRIMARY KEY (InvoiceID),
+	CONSTRAINT InvoiceOrderID_FK FOREIGN KEY (OrderID) REFERENCES ERP.[Order](OrderID)
+)
