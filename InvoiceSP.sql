@@ -3,7 +3,7 @@ USE C_DB10_2018;
 /* AddInvoice */
 GO
 CREATE PROCEDURE AddInvoice
-	(@OrderID INT, @DateOfDelivery DateTime2, @FormOfDelivery VARCHAR(100), @FormOfPayment VARCHAR(100), @CreditNota bit, @Send bit)
+	(@OrderID INT, @DateOfDelivery DateTime2, @FormOfDelivery NVARCHAR(100), @FormOfPayment NVARCHAR(100), @CreditNota bit, @Send bit)
 AS BEGIN
 	INSERT INTO ERP.Invoice 
 	(OrderID, DateOfDelivery, FormOfDelivery, FormOfPayment, CreditNota, [Send])
@@ -14,7 +14,7 @@ END
 /* EditInvoice */
 GO
 CREATE PROCEDURE EditInvoice
-    (@InvoiceID INT, @OrderID INT, @DateOfDelivery DateTime2, @FormOfDelivery VARCHAR(100), @FormOfPayment VARCHAR(100), @CreditNota BIT, @Send BIT)
+    (@InvoiceID INT, @OrderID INT, @DateOfDelivery DateTime2, @FormOfDelivery NVARCHAR(100), @FormOfPayment NVARCHAR(100), @CreditNota BIT, @Send BIT)
 AS BEGIN
     UPDATE ERP.Invoice
     SET OrderID = @OrderID, DateOfDelivery = @DateOfDelivery, FormOfDelivery = @FormOfDelivery, FormOfPayment = @FormOfPayment, CreditNota = @CreditNota, [Send] = @Send
