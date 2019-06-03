@@ -39,10 +39,10 @@ CREATE TABLE ERP.Production_Batch(
 CREATE TABLE ERP.Customer(
 	CustomerID INT IDENTITY(1,1),
 	CompanyName NVARCHAR(50) NOT NULL,
-	ContactPerson NVARCHAR(50) NOT NULL,
 	CustomerAddress NVARCHAR(50) NOT NULL,
 	CustomerTelephone NVARCHAR(20) NOT NULL,
 	CustomerZip NVARCHAR(10) NOT NULL,
 	CustomerTown NVARCHAR(50) NOT NULL,
+	Email NVARCHAR(200) NOT NULL,
 	CONSTRAINT CustomerID PRIMARY KEY (CustomerID)
 )
